@@ -7,7 +7,9 @@
 
 // for menu
 @property (nonatomic) UIScrollView *menuScrollView;
-@property (nonatomic) CGSize menuSize;
+//@property (nonatomic) CGSize menuSize;
+@property (nonatomic) CGFloat menuHeight;
+@property (nonatomic) NSMutableArray* menus;
 
 // for feed
 @property (nonatomic) NSArray *viewControllers;
@@ -84,21 +86,22 @@
 
 - (void)setHmrDataSource:(id<HMRScrollFeedViewDataSource>)hmrDataSource {
     _hmrDataSource = hmrDataSource;
-    [self reloadData];
+//    [self reloadData];
 }
 
 - (void)reloadData {
-    _menuSize = [_hmrDataSource sizeOfMenuView:self];
+//    _menuSize = [_hmrDataSource sizeOfMenuView:self];
+    _menuHeight = [_hmrDataSource heightOfMenuView:self];
     _menuScrollView.frame = CGRectMake(self.frame.origin.x,
                                        self.frame.origin.x,
                                        self.frame.size.width,
-                                       _menuSize.height);
+                                       _menuHeight);
     [self layoutMenuScrollView];
     
     _pageViewController.view.frame = CGRectMake(self.frame.origin.x,
-                                                _menuSize.height,
+                                                _menuHeight,
                                                 self.frame.size.width,
-                                                self.frame.size.height - _menuSize.height);
+                                                self.frame.size.height - _menuHeight);
     
     self.viewControllers = [_hmrDataSource viewsForFeedView:self];
     if ([_viewControllers count] > 0) {
@@ -110,23 +113,41 @@
 }
 
 - (void)layoutMenuScrollView {
-    NSArray *menuViews = [_hmrDataSource viewsForMenuView:self];
+    NSInteger pageCount = [_hmrDataSource numberOfPages:self];
     
-    NSInteger index = 0;
+    if( _menus ){
+        [_menus removeAllObjects];
+    }
+    else{
+        _menus = [NSMutableArray new];
+    }
     
-    for (UIView *v in menuViews) {
-        v.frame = CGRectMake(_menuSize.width * index, 0, _menuSize.width, _menuSize.height);
-        v.tag = index;
-        v.userInteractionEnabled = YES;
+    CGFloat margin = 10;
+    
+    CGFloat contentWidth = 0;
+    for( NSInteger i1 = 0; i1 < pageCount; i1++ ){
+        contentWidth += margin;
+        CGFloat menuWidth = [_hmrDelegate scrollFeedView:self widthForMenuViewAtIndex:i1];
+        HMRMenuTitleView* titleView = [_hmrDataSource scrollFeedView:self titleViewAtIndex:i1];
+        titleView.frame = CGRectMake(contentWidth, 0, menuWidth, _menuHeight);
+        titleView.tag = i1;
+        titleView.userInteractionEnabled = YES;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                               initWithTarget:self
                                               action:@selector(didTapMenuView:)];
-        [v addGestureRecognizer:tapGesture];
+        [titleView addGestureRecognizer:tapGesture];
         
-        [_menuScrollView addSubview:v];
-        index++;
+        contentWidth += menuWidth;
+        
+        [_menus addObject:titleView];
+        [_menuScrollView addSubview:titleView];
+        
+        if( i1 == 0 ){
+            titleView.activeView.alpha = 1;
+        }
     }
-    _menuScrollView.contentSize = CGSizeMake(_menuSize.width * index, _menuSize.height);
+    
+    _menuScrollView.contentSize = CGSizeMake(contentWidth, _menuHeight);
 }
 
 - (UIPageViewControllerTransitionStyle)transitionStyle {
@@ -189,7 +210,11 @@
 #pragma mark - MenuScrollView Methods
 
 - (void)moveToPageIndexInMenuScrollViewWithIndex:(NSInteger)index {
-    CGRect destFrame = CGRectMake(index * _menuSize.width + _menuSize.width/2 - 160,
+    
+    CGFloat screenHalfWidth = _menuScrollView.frame.size.width/2;
+    HMRMenuTitleView* targetTitleView = _menus[index];
+    
+    CGRect destFrame = CGRectMake(targetTitleView.frame.origin.x + targetTitleView.frame.size.width/2 - screenHalfWidth,
                                   0,
                                   _menuScrollView.frame.size.width,
                                   _menuScrollView.frame.size.height);
@@ -232,6 +257,14 @@
 - (void)didChangeCurrentPage {
     if ([_hmrDelegate respondsToSelector:@selector(scrollFeedView:didChangeCurrentPage:)]) {
         [_hmrDelegate scrollFeedView:self didChangeCurrentPage:_currentPageIndex];
+        HMRMenuTitleView* targetTitleView =  _menus[_currentPageIndex];
+        targetTitleView.activeView.alpha = 1;
+        for (HMRMenuTitleView* titleView in _menus) {
+            if( titleView.tag == targetTitleView.tag ){
+                continue;
+            }
+            titleView.activeView.alpha = 0;
+        }
     }
 }
 

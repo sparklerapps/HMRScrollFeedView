@@ -28,6 +28,7 @@
 		2079DA5F18E6BD30004C71F8 /* libHMRScrollFeedView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2079DA0118E6BB31004C71F8 /* libHMRScrollFeedView.a */; };
 		2079DA6818EA4117004C71F8 /* HMRColorPalette.m in Sources */ = {isa = PBXBuildFile; fileRef = 2079DA6718EA4117004C71F8 /* HMRColorPalette.m */; };
 		2079DA6B18EA53A2004C71F8 /* HMRSampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2079DA6A18EA53A2004C71F8 /* HMRSampleViewController.m */; };
+		E35C6E94199498F100D143E6 /* HMRMenuTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = E35C6E93199498F100D143E6 /* HMRMenuTitleView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		2079DA6718EA4117004C71F8 /* HMRColorPalette.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMRColorPalette.m; sourceTree = "<group>"; };
 		2079DA6918EA53A2004C71F8 /* HMRSampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMRSampleViewController.h; sourceTree = "<group>"; };
 		2079DA6A18EA53A2004C71F8 /* HMRSampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMRSampleViewController.m; sourceTree = "<group>"; };
+		E35C6E92199498F100D143E6 /* HMRMenuTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMRMenuTitleView.h; sourceTree = "<group>"; };
+		E35C6E93199498F100D143E6 /* HMRMenuTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMRMenuTitleView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +157,8 @@
 			children = (
 				2079DA0918E6BB31004C71F8 /* HMRScrollFeedView.h */,
 				2079DA0B18E6BB31004C71F8 /* HMRScrollFeedView.m */,
+				E35C6E92199498F100D143E6 /* HMRMenuTitleView.h */,
+				E35C6E93199498F100D143E6 /* HMRMenuTitleView.m */,
 				2079DA0718E6BB31004C71F8 /* Supporting Files */,
 			);
 			path = HMRScrollFeedView;
@@ -329,6 +334,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E35C6E94199498F100D143E6 /* HMRMenuTitleView.m in Sources */,
 				2079DA0C18E6BB31004C71F8 /* HMRScrollFeedView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
