@@ -299,6 +299,7 @@ UIScrollViewDelegate
                                                         targetTitleView.frame.size.width,
                                                         _activeView.frame.size.height);
                      }];
+    [self moveToPageIndexInMenuScrollViewWithIndex:_currentPageIndex];
     
 }
 
