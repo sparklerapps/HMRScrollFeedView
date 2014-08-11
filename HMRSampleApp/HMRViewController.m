@@ -21,23 +21,35 @@ static const NSInteger MenuHeight = 45;
 
 - (void)loadView {
     
+//    self.titles = @[@"1",
+//                    @"12",
+//                    @"123",
+//                    @"1234",
+//                    @"12345",
+//                    @"123456",
+//                    @"1234567",
+//                    @"12345678",
+//                    @"123456789",
+//                    @"1234567890"];
+    
     self.titles = @[@"1",
-                    @"12",
-                    @"123",
-                    @"1234",
                     @"12345",
-                    @"123456",
-                    @"1234567",
-                    @"12345678",
+                    @"12",
                     @"123456789",
-                    @"1234567890"];
+                    @"123",
+                    @"1234567",
+                    @"1234",
+                    @"1234567890",
+                    @"123456",
+                    @"12345678"
+                    ];
     
     self.view = self.feedView;
 }
 
 - (HMRScrollFeedView *)feedView {
     if (_feedView == nil) {
-        self.feedView = [[HMRScrollFeedView alloc] initWithStyle:UIPageViewControllerTransitionStylePageCurl];
+        self.feedView = [[HMRScrollFeedView alloc] initWithStyle:UIPageViewControllerTransitionStyleScroll];
         _feedView.hmrDataSource = self;
         _feedView.hmrDelegate = self;
         [_feedView reloadData];

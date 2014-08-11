@@ -1,7 +1,11 @@
 #import "HMRScrollFeedView.h"
 
 @interface HMRScrollFeedView ()
-<UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+<
+UIPageViewControllerDataSource,
+UIPageViewControllerDelegate,
+UIScrollViewDelegate
+>
 
 @property (nonatomic) UIPageViewControllerTransitionStyle transitionStyle;
 
@@ -14,6 +18,8 @@
 // for feed
 @property (nonatomic) NSArray *viewControllers;
 @property (nonatomic) UIPageViewController *pageViewController;
+
+@property (nonatomic,strong) UIView* activeView;
 
 @end
 
@@ -72,6 +78,7 @@
 {
     self.menuScrollView = [[UIScrollView alloc] init];
     _menuScrollView.showsHorizontalScrollIndicator = NO;
+    _menuScrollView.delegate = self;
     [self addSubview:_menuScrollView];
     
     self.pageViewController = [[UIPageViewController alloc]
@@ -143,9 +150,20 @@
         [_menuScrollView addSubview:titleView];
         
         if( i1 == 0 ){
-            titleView.activeView.alpha = 1;
+            if( _activeView ){
+                [_activeView removeFromSuperview];
+            }
+            _activeView = [[UIView alloc] initWithFrame:CGRectMake(titleView.frame.origin.x,
+                                                                   titleView.frame.size.height-5,
+                                                                   titleView.frame.size.width,
+                                                                   5)];
+            _activeView.backgroundColor = [UIColor whiteColor];
+            _activeView.alpha = 1;
+            [_menuScrollView addSubview:_activeView];
         }
     }
+    
+    [_menuScrollView bringSubviewToFront:_activeView];
     
     _menuScrollView.contentSize = CGSizeMake(contentWidth, _menuHeight);
 }
@@ -198,6 +216,8 @@
         _currentPageIndex = page;
         
         [self moveToPageIndexInMenuScrollViewWithIndex:_currentPageIndex];
+        
+        
     }
 }
 
@@ -219,6 +239,15 @@
                                   _menuScrollView.frame.size.width,
                                   _menuScrollView.frame.size.height);
     [_menuScrollView scrollRectToVisible:destFrame animated:YES];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         
+                         _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
+                                                        targetTitleView.frame.size.height-5,
+                                                        targetTitleView.frame.size.width,
+                                                        5);
+                     }];
 }
 
 - (void)didTapMenuView:(UITapGestureRecognizer *)gesture {
@@ -257,15 +286,23 @@
 - (void)didChangeCurrentPage {
     if ([_hmrDelegate respondsToSelector:@selector(scrollFeedView:didChangeCurrentPage:)]) {
         [_hmrDelegate scrollFeedView:self didChangeCurrentPage:_currentPageIndex];
-        HMRMenuTitleView* targetTitleView =  _menus[_currentPageIndex];
-        targetTitleView.activeView.alpha = 1;
-        for (HMRMenuTitleView* titleView in _menus) {
-            if( titleView.tag == targetTitleView.tag ){
-                continue;
-            }
-            titleView.activeView.alpha = 0;
-        }
+        
+        
+        
+        
+//        targetTitleView.activeView.alpha = 1;
+//        for (HMRMenuTitleView* titleView in _menus) {
+//            if( titleView.tag == targetTitleView.tag ){
+//                continue;
+//            }
+//            titleView.activeView.alpha = 0;
+//        }
     }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+;
 }
 
 @end

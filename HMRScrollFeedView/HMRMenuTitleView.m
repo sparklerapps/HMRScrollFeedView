@@ -31,10 +31,10 @@ static const NSInteger HMR_TITLE_VIEW_HEIGHT = 20;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_titleLabel];
         
-        _activeView = [[UIView alloc] initWithFrame:CGRectMake(5, frame.size.height-4, frame.size.width-10, 4)];
-        _activeView.backgroundColor = [UIColor blackColor];
-        _activeView.alpha = 0;
-        [self addSubview:_activeView];
+//        _activeView = [[UIView alloc] initWithFrame:CGRectMake(5, frame.size.height-4, frame.size.width-10, 4)];
+//        _activeView.backgroundColor = [UIColor blackColor];
+//        _activeView.alpha = 0;
+//        [self addSubview:_activeView];
     }
     return self;
 }
