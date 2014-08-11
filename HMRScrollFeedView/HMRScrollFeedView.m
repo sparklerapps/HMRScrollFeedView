@@ -21,6 +21,7 @@ UIScrollViewDelegate
 
 @property (nonatomic,strong) UIView* activeView;
 
+@property (nonatomic, readonly) NSInteger beforePageIndex;
 @end
 
 
@@ -129,7 +130,7 @@ UIScrollViewDelegate
         _menus = [NSMutableArray new];
     }
     
-    CGFloat margin = 10;
+    CGFloat margin = 0;
     
     CGFloat contentWidth = 0;
     for( NSInteger i1 = 0; i1 < pageCount; i1++ ){
@@ -196,7 +197,7 @@ UIScrollViewDelegate
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
-    
+//    NSLog(@"viewControllerAfterViewController");
     NSInteger page = [self indexOfViewController:viewController];
     
     if (page == NSNotFound) {
@@ -211,13 +212,24 @@ UIScrollViewDelegate
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
+    NSLog(@"willTransitionToViewControllers");
     if ([pendingViewControllers count] > 0) {
         NSInteger page = [self indexOfViewController:pendingViewControllers[0]];
+//        NSLog(@"INDEX:%d",page);
+        _beforePageIndex = _currentPageIndex;
         _currentPageIndex = page;
+        
         
         [self moveToPageIndexInMenuScrollViewWithIndex:_currentPageIndex];
         
-        
+        HMRMenuTitleView* targetTitleView = _menus[_currentPageIndex];
+        [UIView animateWithDuration:0.3f
+                         animations:^{
+                             _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
+                                                            _activeView.frame.origin.y,
+                                                            targetTitleView.frame.size.width,
+                                                            _activeView.frame.size.height);
+                         }];
     }
 }
 
@@ -239,15 +251,6 @@ UIScrollViewDelegate
                                   _menuScrollView.frame.size.width,
                                   _menuScrollView.frame.size.height);
     [_menuScrollView scrollRectToVisible:destFrame animated:YES];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^{
-                         
-                         _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
-                                                        targetTitleView.frame.size.height-5,
-                                                        targetTitleView.frame.size.width,
-                                                        5);
-                     }];
 }
 
 - (void)didTapMenuView:(UITapGestureRecognizer *)gesture {
@@ -280,29 +283,30 @@ UIScrollViewDelegate
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    [self didChangeCurrentPage];
+    NSLog(@"didFinishAnimating  finished:%d completed:%d",finished,completed);
+    if( completed ){
+        [self didChangeCurrentPage];
+    }
+    else{
+        _currentPageIndex = _beforePageIndex;
+    }
+    
+    HMRMenuTitleView* targetTitleView = _menus[_currentPageIndex];
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
+                                                        _activeView.frame.origin.y,
+                                                        targetTitleView.frame.size.width,
+                                                        _activeView.frame.size.height);
+                     }];
+    
 }
 
 - (void)didChangeCurrentPage {
+    NSLog(@"didChangeCurrentPage    %d:",_currentPageIndex);
     if ([_hmrDelegate respondsToSelector:@selector(scrollFeedView:didChangeCurrentPage:)]) {
         [_hmrDelegate scrollFeedView:self didChangeCurrentPage:_currentPageIndex];
-        
-        
-        
-        
-//        targetTitleView.activeView.alpha = 1;
-//        for (HMRMenuTitleView* titleView in _menus) {
-//            if( titleView.tag == targetTitleView.tag ){
-//                continue;
-//            }
-//            titleView.activeView.alpha = 0;
-//        }
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-;
 }
 
 @end

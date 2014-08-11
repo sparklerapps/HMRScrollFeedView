@@ -73,7 +73,7 @@ static const NSInteger MenuHeight = 45;
 
 - (HMRMenuTitleView*)scrollFeedView:(HMRScrollFeedView*)scrollFeedView titleViewAtIndex:(NSInteger)index
 {
-    CGFloat marginWidth = 10;
+    CGFloat marginWidth = 30;
     NSString* title = _titles[index];
     CGSize size = [title sizeWithFont:[HMRMenuTitleView titleFont]];
     if( size.width < 50 ){
@@ -93,7 +93,7 @@ static const NSInteger MenuHeight = 45;
 //--------------------------------------------------
 - (CGFloat)scrollFeedView:(HMRScrollFeedView *)scrollFeedView widthForMenuViewAtIndex:(NSInteger)index
 {
-    CGFloat marginWidth = 10;
+    CGFloat marginWidth = 30;
     NSString* title = _titles[index];
     CGSize size = [title sizeWithFont:[HMRMenuTitleView titleFont]];
     if( size.width < 50 ){
@@ -112,7 +112,7 @@ static const NSInteger MenuHeight = 45;
 //        UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MenuWidth, MenuHeight)];
         
         
-        CGFloat marginWidth = 10;
+        CGFloat marginWidth = 50;
         NSString* title = _titles[i];
         CGSize size = [title sizeWithFont:[HMRMenuTitleView titleFont]];
         if( size.width < 50 ){
@@ -121,6 +121,7 @@ static const NSInteger MenuHeight = 45;
         
         size.width += marginWidth;
         
+        NSLog(@"INDEX %d size.width:%f",i,size.width);
         HMRMenuTitleView* v = [[HMRMenuTitleView alloc] initWithFrame:CGRectMake(0, 0, size.width, MenuHeight) title:_titles[i]];
         v.titleLabel.text = _titles[i];
         v.backgroundColor = [HMRColorPalette colorWithIndex:i];
@@ -136,7 +137,7 @@ static const NSInteger MenuHeight = 45;
         // create rview controller
         HMRSampleViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"SampleViewController"];
         [vc view];
-        vc.titleLabel.text = [NSString stringWithFormat:@"%d", i];
+        vc.titleLabel.text = _titles[i];
         vc.view.backgroundColor = [HMRColorPalette colorWithIndex:i];
                 
         [array addObject:vc];
@@ -149,7 +150,7 @@ static const NSInteger MenuHeight = 45;
 #pragma mark - HMRScrollFeedViewDelegate
 
 - (void)scrollFeedView:(HMRScrollFeedView *)scrollFeedView didChangeCurrentPage:(NSInteger)page {
-    NSLog(@"ページ遷移Done. page: %ld", page);
+//    NSLog(@"ページ遷移Done. page: %ld", page);
 }
 
 
