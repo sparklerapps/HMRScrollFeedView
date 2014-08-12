@@ -43,7 +43,6 @@
  */
 - (HMRMenuTitleView*)scrollFeedView:(HMRScrollFeedView*)scrollFeedView titleViewAtIndex:(NSInteger)index;
 
-- (NSArray *)viewsForMenuView:(HMRScrollFeedView *)scrollFeedView;
 - (NSArray *)viewsForFeedView:(HMRScrollFeedView *)scrollFeedView;
 
 @end

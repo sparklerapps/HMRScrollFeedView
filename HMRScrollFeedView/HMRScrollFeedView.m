@@ -11,7 +11,6 @@ UIScrollViewDelegate
 
 // for menu
 @property (nonatomic) UIScrollView *menuScrollView;
-//@property (nonatomic) CGSize menuSize;
 @property (nonatomic) CGFloat menuHeight;
 @property (nonatomic) NSMutableArray* menus;
 
@@ -94,11 +93,9 @@ UIScrollViewDelegate
 
 - (void)setHmrDataSource:(id<HMRScrollFeedViewDataSource>)hmrDataSource {
     _hmrDataSource = hmrDataSource;
-//    [self reloadData];
 }
 
 - (void)reloadData {
-//    _menuSize = [_hmrDataSource sizeOfMenuView:self];
     _menuHeight = [_hmrDataSource heightOfMenuView:self];
     _menuScrollView.frame = CGRectMake(self.frame.origin.x,
                                        self.frame.origin.x,
@@ -212,24 +209,13 @@ UIScrollViewDelegate
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
-    NSLog(@"willTransitionToViewControllers");
     if ([pendingViewControllers count] > 0) {
         NSInteger page = [self indexOfViewController:pendingViewControllers[0]];
-//        NSLog(@"INDEX:%d",page);
         _beforePageIndex = _currentPageIndex;
         _currentPageIndex = page;
         
         
         [self moveToPageIndexInMenuScrollViewWithIndex:_currentPageIndex];
-        
-        HMRMenuTitleView* targetTitleView = _menus[_currentPageIndex];
-        [UIView animateWithDuration:0.3f
-                         animations:^{
-                             _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
-                                                            _activeView.frame.origin.y,
-                                                            targetTitleView.frame.size.width,
-                                                            _activeView.frame.size.height);
-                         }];
     }
 }
 
@@ -251,6 +237,14 @@ UIScrollViewDelegate
                                   _menuScrollView.frame.size.width,
                                   _menuScrollView.frame.size.height);
     [_menuScrollView scrollRectToVisible:destFrame animated:YES];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
+                                                        _activeView.frame.origin.y,
+                                                        targetTitleView.frame.size.width,
+                                                        _activeView.frame.size.height);
+                     }];
 }
 
 - (void)didTapMenuView:(UITapGestureRecognizer *)gesture {
@@ -280,10 +274,11 @@ UIScrollViewDelegate
     _currentPageIndex = destIndex;
     
     [self moveToPageIndexInMenuScrollViewWithIndex:destIndex];
+    
+    
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    NSLog(@"didFinishAnimating  finished:%d completed:%d",finished,completed);
     if( completed ){
         [self didChangeCurrentPage];
     }
@@ -291,20 +286,11 @@ UIScrollViewDelegate
         _currentPageIndex = _beforePageIndex;
     }
     
-    HMRMenuTitleView* targetTitleView = _menus[_currentPageIndex];
-    [UIView animateWithDuration:0.3f
-                     animations:^{
-                         _activeView.frame = CGRectMake(targetTitleView.frame.origin.x,
-                                                        _activeView.frame.origin.y,
-                                                        targetTitleView.frame.size.width,
-                                                        _activeView.frame.size.height);
-                     }];
     [self moveToPageIndexInMenuScrollViewWithIndex:_currentPageIndex];
     
 }
 
 - (void)didChangeCurrentPage {
-    NSLog(@"didChangeCurrentPage    %d:",_currentPageIndex);
     if ([_hmrDelegate respondsToSelector:@selector(scrollFeedView:didChangeCurrentPage:)]) {
         [_hmrDelegate scrollFeedView:self didChangeCurrentPage:_currentPageIndex];
     }

@@ -105,32 +105,6 @@ static const NSInteger MenuHeight = 45;
     return size.width;
 }
 
-- (NSArray *)viewsForMenuView:(HMRScrollFeedView *)scrollFeedView {
-    NSMutableArray *array = [NSMutableArray array];
-    for (int i=0; i<[_titles count]; i++) {
-        // create view controller
-//        UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MenuWidth, MenuHeight)];
-        
-        
-        CGFloat marginWidth = 50;
-        NSString* title = _titles[i];
-        CGSize size = [title sizeWithFont:[HMRMenuTitleView titleFont]];
-        if( size.width < 50 ){
-            size.width = 50;
-        }
-        
-        size.width += marginWidth;
-        
-        NSLog(@"INDEX %d size.width:%f",i,size.width);
-        HMRMenuTitleView* v = [[HMRMenuTitleView alloc] initWithFrame:CGRectMake(0, 0, size.width, MenuHeight) title:_titles[i]];
-        v.titleLabel.text = _titles[i];
-        v.backgroundColor = [HMRColorPalette colorWithIndex:i];
-        [array addObject:v];
-    }
-    
-    return [array copy];
-}
-
 - (NSArray *)viewsForFeedView:(HMRScrollFeedView *)scrollFeedView {
     NSMutableArray *array = [NSMutableArray array];
     for (int i=0; i<[_titles count]; i++) {
